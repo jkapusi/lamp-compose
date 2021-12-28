@@ -1,0 +1,40 @@
+version: "3"
+
+services:
+
+  # graceful reload: docker-compose kill -s USR1 apache
+  apache:
+    # image: httpd:2.4-bullseye
+    build: ./apache/
+    image: ubuntu/apache2:2.4-20.04_beta
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: always
+    volumes:
+      - ./apache/conf/:/etc/apache2/conf-enabled/:ro
+      - ./apache/vhost/:/etc/apache2/sites-enabled/:ro
+      - ./certbot/conf/:/etc/letsencrypt/:ro
+      - ./certbot/www:/var/lib/letsencrypt/:ro
+      - ./webroot/:/var/www/htdocs/:rw
+    links:
+      - php56
+
+  php56:
+    build: ./php56/
+    image: php:5.6-fpm
+    volumes:
+      - ./webroot/:/var/www/htdocs/:rw
+
+#  php7x:
+#    image: php:7-fpm
+
+  # cert gen: docker-compose run --rm certbot certonly --webroot --webroot-path /var/lib/letsencrypt/ -d zabbix.kapusi.hu 
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./certbot/www/:/var/lib/letsencrypt/:rw
+      - ./certbot/conf/:/etc/letsencrypt/:rw
+
+
+#https://github.com/allinurl/goaccess#docker
