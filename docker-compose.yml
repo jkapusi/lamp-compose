@@ -20,6 +20,7 @@ services:
     links:
       - php56
       - php72
+      - php74
       - php80
 
   php56:
