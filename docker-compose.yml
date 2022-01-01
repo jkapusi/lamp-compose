@@ -32,6 +32,11 @@ services:
     volumes:
       - ./webroot/:/var/www/htdocs/:rw
 
+  php74:
+    build: ./php7.4/
+    volumes:
+      - ./webroot/:/var/www/htdocs/:rw
+
   php80:
     build: ./php8.0/
     volumes:
